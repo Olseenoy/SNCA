@@ -103,15 +103,15 @@ def generate_pdf_report(user_input, similar_issues, similarities, rephrased_caus
     c.drawString(50, y, "Non-Conformance Analysis Report")
     c.setFont("Helvetica", 10)
     y -= 20
-    c.drawString(50, y, f"Generated: 2025-08-19 01:03:00 WAT")
+    c.drawString(50, y, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} WAT")
     y -= 30
-    
+
     c.drawString(50, y, "User Input:")
     y -= 20
     for key, value in user_input.items():
         c.drawString(50, y, f"{key.capitalize()}: {value}")
         y -= 15
-    
+
     y -= 20
     c.drawString(50, y, "Similar Issues Found:")
     y -= 20
@@ -126,7 +126,7 @@ def generate_pdf_report(user_input, similar_issues, similarities, rephrased_caus
         if y < 50:
             c.showPage()
             y = 750
-    
+
     c.showPage()
     c.save()
     buffer.seek(0)
@@ -137,7 +137,7 @@ st.subheader("Chat with the Analyzer")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
     st.session_state.user_input = {
-        "date": "2025-08-19",  # Current date
+        "date": datetime.now().strftime('%Y-%m-%d'),  # Current date
         "shift": None,
         "factory": None,
         "machine_no": None,
@@ -154,7 +154,7 @@ for message in st.session_state.chat_history:
 prompt = st.chat_input("Enter your response...")
 if prompt:
     st.session_state.chat_history.append({"role": "user", "content": prompt})
-    
+
     if st.session_state.step == "shift":
         st.session_state.user_input["shift"] = prompt
         st.session_state.chat_history.append({"role": "assistant", "content": "Which factory did the incident occur in? (e.g., Line A, Line B)"})
@@ -170,19 +170,19 @@ if prompt:
     elif st.session_state.step == "issue":
         st.session_state.user_input["issue"] = prompt
         st.session_state.chat_history.append({"role": "assistant", "content": "Processing your input..."})
-        
+
         # Find similar issues
         similar_issues, similarities = find_similar_issues(
             st.session_state.user_input["issue"],
             st.session_state.user_input["machine_no"],
             df
         )
-        
+
         # Rephrase root causes and collect corrections/corrective actions
         rephrased_causes = [rephrase_root_cause(row["root_cause"]) for _, row in similar_issues.iterrows()]
         corrections = [row["correction"] for _, row in similar_issues.iterrows()]
         corrective_actions = [row["corrective_action"] for _, row in similar_issues.iterrows()]
-        
+
         # Display results
         with st.chat_message("assistant"):
             st.write("**Analysis Results**")
@@ -196,7 +196,7 @@ if prompt:
                     st.write(f"  - Corrective Action: {corrective_actions[idx]}")
             else:
                 st.write(f"No similar issues found for machine {st.session_state.user_input['machine_no']} or issue.")
-            
+
             # Generate and offer PDF report
             pdf_buffer = generate_pdf_report(st.session_state.user_input, similar_issues, similarities, rephrased_causes, corrections, corrective_actions)
             st.download_button(
@@ -205,12 +205,12 @@ if prompt:
                 file_name="non_conformance_report.pdf",
                 mime="application/pdf"
             )
-        
+
         # Reset for new input
         st.session_state.chat_history.append({"role": "assistant", "content": "Start a new analysis? Enter the shift (e.g., Day, Night)."})
         st.session_state.step = "shift"
         st.session_state.user_input = {
-            "date": "2025-08-19",
+            "date": datetime.now().strftime('%Y-%m-%d'),
             "shift": None,
             "factory": None,
             "machine_no": None,
@@ -225,13 +225,13 @@ with tab1:
     trend = df.groupby("date").size().reset_index(name="count")
     fig_trend = px.line(trend, x="date", y="count", title="Incidents Over Time")
     st.plotly_chart(fig_trend, use_container_width=True)
-    
+
     st.subheader("Issue Distribution")
     issue_counts = df["issue"].value_counts().reset_index()
     issue_counts.columns = ["issue", "count"]
     fig_pie = px.pie(issue_counts.head(5), names="issue", values="count", title="Top Issue Types")
     st.plotly_chart(fig_pie, use_container_width=True)
-    
+
     st.subheader("Machine Distribution")
     machine_counts = df["machine_no"].value_counts().reset_index()
     machine_counts.columns = ["machine_no", "count"]
@@ -248,8 +248,8 @@ with tab2:
         future = model.make_future_dataframe(periods=90)
         forecast = model.predict(future)
         fig_forecast = px.line(forecast, x="ds", y="yhat", title="Incident Forecast (90 Days)")
-        fig_forecast.add_scatter(x=forecast["ds"], y="yhat_lower", mode="lines", name="Lower Bound", line=dict(dash="dash"))
-        fig_forecast.add_scatter(x=forecast["ds"], y="yhat_upper", mode="lines", name="Upper Bound", line=dict(dash="dash"))
+        fig_forecast.add_scatter(x=forecast["ds"], y=forecast["yhat_lower"], mode="lines", name="Lower Bound", line=dict(dash="dash"))
+        fig_forecast.add_scatter(x=forecast["ds"], y=forecast["yhat_upper"], mode="lines", name="Upper Bound", line=dict(dash="dash"))
         st.plotly_chart(fig_forecast, use_container_width=True)
     else:
         st.write("Insufficient data for forecasting.")
