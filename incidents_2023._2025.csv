@@ -1,4 +1,4 @@
-﻿Date,Shift,Factory,Machine No,Issues,Root Cause,Correction ,Corrective Action,,,
+﻿Date,Shift,Factory,Machine_no,Issues,Root_Cause,Correction ,Corrective_Action,,,
 02/06/2023,DAY B,PACKAGING,,Faint code on cans,Clogging of Markem Imaje machine coding head,The machine was stopped while affected cans were retrieved and recoded,The print head was cleaned to remove the clog,,,
 02/06/2023,DAY B,PACKAGING,,"Total of 304 cans with white patches on the lid from trolley 1 - 4, 11, 12 ,18 - 21, 29, 31, 32, 34,50 and 52 emanating from autoclave  6,3,6,2, 4 and 6 respectively with a ph of 7.59, 8.12, 7.59, 7.56, 7.54, 7.79 and 7.62",Quality of lids," Affected cans were removed from the trolley, Consistent monitoring of the trolley",,,,
 02/06/2023,DAY B,FILLING/AUTOCALVE,,Dent on Cans,Metal guide at the seamer heads not adequately positioned.,The line was stopped and affected cans were isolated.,The metal guide was adjusted,,,
@@ -12277,4 +12277,5 @@ powder","Intervention is still ongoing to identify
 30/12/2023,NB,Onga 1,IMA 03,Bad wrap,Stirrer chain,Engineer/operator worked on the machine,Engineer/operator worked on the machine,Chidi,,
 30/12/2023,NB,Onga 1,ILAPAK 22,Sealing fault,Jaw fault,Engineer/operator worked on the machine,Engineer/operator worked on the machine,Chidi,,
 30/12/2023,NB,Onga 2,IMA 31,Bad wrap,Knife fault,Engineer/operator worked on the machine,Engineer/operator worked on the machine,Chidi,,
+
 30/12/2023,NB,Onga 2,IMA 32,Bad wrap,Knife fault,Engineer/operator worked on the machine,Engineer/operator worked on the machine,Chidi,,
